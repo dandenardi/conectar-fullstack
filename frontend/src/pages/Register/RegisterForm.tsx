@@ -1,5 +1,6 @@
 import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
+import api from "../../utils/axios.config";
 
 function RegisterForm() {
   const navigate = useNavigate();
@@ -11,19 +12,19 @@ function RegisterForm() {
   async function handleRegister(e: React.FormEvent) {
     e.preventDefault();
     try {
-      const response = await fetch("/api/register", {
-        method: "POST",
-        body: JSON.stringify({ name, email, password }),
-        headers: { "Content-type": "application/json" },
+      const response = await api.post("/auth/register", {
+        name,
+        email,
+        password,
       });
 
-      if (response.ok) {
+      if (response.status === 201) {
         navigate("/login");
-      } else {
-        setError("Registration failed");
       }
-    } catch (error) {
-      setError("Um erro desconhecido aconteceu.");
+    } catch (error: any) {
+      setError(
+        "Um erro desconhecido aconteceu. Por gentileza, tente novamente mais tarde."
+      );
     }
   }
 

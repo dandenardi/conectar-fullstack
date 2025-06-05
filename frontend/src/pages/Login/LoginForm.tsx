@@ -1,5 +1,6 @@
 import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
+import api from "../../utils/axios.config";
 
 const LoginForm: React.FC = () => {
   const navigate = useNavigate();
@@ -10,15 +11,11 @@ const LoginForm: React.FC = () => {
   async function handleLogin(e: React.FormEvent) {
     e.preventDefault();
     try {
-      const response = await fetch("/api/login", {
-        method: "POST",
-        body: JSON.stringify({ email, password }),
-        headers: { "Content-Type": "application/json" },
-      });
-
-      if (response.ok) {
-        const data = await response.json();
-        if (data.role === "admin") {
+      const response = await api.post("/auth/login", { email, password });
+      console.log("REsPONSE", response);
+      if (response.status === 201) {
+        localStorage.setItem("token", response.data.access_token);
+        if (response.data.role === "admin") {
           navigate("/users");
         } else {
           navigate("/profile");
