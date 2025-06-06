@@ -1,5 +1,6 @@
-import React, { useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
+import api from "../../../utils/axios.config";
 
 interface User {
   id: number;
@@ -18,9 +19,14 @@ function UserListPage() {
   useEffect(() => {
     async function fetchUsers() {
       try {
-        const response = await fetch("/api/users");
-        if (response.ok) {
-          const data = await response.json();
+        const response = await api.get("/users", {
+          headers: {
+            Authorization: `Bearer ${localStorage.getItem("token")}`,
+          },
+        });
+
+        if (response) {
+          const data = await response.data;
           setUsers(data);
         } else {
           setError("Falha ao buscar usuários.");
@@ -34,7 +40,7 @@ function UserListPage() {
   }, []);
 
   function handleEdit(id: number) {
-    navigate(`/edit-user/${id}`);
+    navigate(`/profile/${id}`);
   }
 
   async function handleDelete(id: number) {

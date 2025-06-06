@@ -12,7 +12,7 @@ const LoginForm: React.FC = () => {
     e.preventDefault();
     try {
       const response = await api.post("/auth/login", { email, password });
-      console.log("REsPONSE", response);
+
       if (response.status === 201) {
         localStorage.setItem("token", response.data.access_token);
         if (response.data.role === "admin") {
