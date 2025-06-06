@@ -21,14 +21,18 @@ export class AuthService {
     }
 
     const hashedPassword = await bcrypt.hash(password, 10);
-    console.log('HASHED PASSWORD', hashedPassword);
+
     const newUser = await this.userService.createUser({
       name,
       email,
       password: hashedPassword,
     });
 
-    const payload = { email: newUser.email, sub: newUser.id };
+    const payload = {
+      email: newUser.email,
+      sub: newUser.id,
+      role: newUser.role,
+    };
 
     const accessToken = this.jwtService.sign(payload);
     return {
@@ -51,7 +55,10 @@ export class AuthService {
       throw new Error('Invalid credentials');
     }
 
-    const payload = { email: user.email, sub: user.id };
+    user.lastLogin = new Date();
+    await this.userService.updateUser(user.id, user);
+
+    const payload = { email: user.email, sub: user.id, role: user.role };
     const accessToken = this.jwtService.sign(payload);
 
     return {

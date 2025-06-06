@@ -23,6 +23,12 @@ export class User {
   @Column({ default: 'admin' })
   role: string;
 
+  @Column({ nullable: true })
+  lastLogin: Date;
+
+  @Column({ default: true })
+  isActive: boolean;
+
   @CreateDateColumn()
   createdAt: Date;
 
